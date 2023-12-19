@@ -1,7 +1,8 @@
 #!/usr/bin/python3
-""" State Module for HBNB project """
+"""This module contains one class Amenity"""
 from models.base_model import BaseModel
 
 
 class Amenity(BaseModel):
+    """child class of the class BaseModel"""
     name = ""

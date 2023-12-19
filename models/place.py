@@ -1,10 +1,10 @@
 #!/usr/bin/python3
-""" Place Module for HBNB project """
+"""This module contains one class Place"""
 from models.base_model import BaseModel
 
 
 class Place(BaseModel):
-    """ A place to stay """
+    """child class of the class Basemodel"""
     city_id = ""
     user_id = ""
     name = ""

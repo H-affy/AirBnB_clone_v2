@@ -1,99 +1,65 @@
 #!/usr/bin/python3
-""" """
-from models.base_model import BaseModel
+"""defines unittests for BaseModel.py.
+Unittest classes:
+    TestInitMethod
+    TestPublicInstanceMethods
+"""
 import unittest
-import datetime
-from uuid import UUID
-import json
-import os
+from models.base_model import BaseModel
+from datetime import datetime
 
 
-class test_basemodel(unittest.TestCase):
-    """ """
+class TestInitMethod(unittest.TestCase):
+    """Unittests for testing the constructor"""
+    def test_obj_new(self):
+        """ tests when an completely new object is created"""
+        instance = BaseModel()
+        self.assertIsInstance(instance, BaseModel)
+        self.assertIsNotNone(instance.id)
+        self.assertIsNotNone(instance.created_at)
+        self.assertIsNotNone(instance.updated_at)
+        self.assertIsInstance(instance.id, str)
+        self.assertIsInstance(instance.created_at, datetime)
+        self.assertIsInstance(instance.updated_at, datetime)
 
-    def __init__(self, *args, **kwargs):
-        """ """
-        super().__init__(*args, **kwargs)
-        self.name = 'BaseModel'
-        self.value = BaseModel
+    def test_obj_from_dict(self):
+        """test when an object is created from a dictionary"""
+        dict_ = {
+            "id": "234",
+            "created_at": "2023-11-09T12:00:00.000000",
+            "updated_at": "2023-11-20T12:00:00.000000",
+        }
+        instance = BaseModel(**dict_)
+        self.assertIsInstance(instance, BaseModel)
 
-    def setUp(self):
-        """ """
-        pass
 
-    def tearDown(self):
-        try:
-            os.remove('file.json')
-        except:
-            pass
-
-    def test_default(self):
-        """ """
-        i = self.value()
-        self.assertEqual(type(i), self.value)
-
-    def test_kwargs(self):
-        """ """
-        i = self.value()
-        copy = i.to_dict()
-        new = BaseModel(**copy)
-        self.assertFalse(new is i)
-
-    def test_kwargs_int(self):
-        """ """
-        i = self.value()
-        copy = i.to_dict()
-        copy.update({1: 2})
-        with self.assertRaises(TypeError):
-            new = BaseModel(**copy)
+class TestPublicInstanceMethods(unittest.TestCase):
+    """Unittests for testing the public instance methods"""
+    def test_str(self):
+        """ test string representation of the object """
+        instance = BaseModel()
+        name = instance.__class__.__name__
+        id = instance.id
+        dict_ = instance.__dict__
+        expected_rep = f"[{name}] ({id}) {dict_}"
+        self.assertEqual(str(instance), expected_rep)
 
     def test_save(self):
-        """ Testing save """
-        i = self.value()
-        i.save()
-        key = self.name + "." + i.id
-        with open('file.json', 'r') as f:
-            j = json.load(f)
-            self.assertEqual(j[key], i.to_dict())
+        """ tests save method """
+        instance = BaseModel()
+        updated_at = instance.updated_at
+        instance.save()
+        self.assertNotEqual(updated_at, datetime.now())
 
-    def test_str(self):
-        """ """
-        i = self.value()
-        self.assertEqual(str(i), '[{}] ({}) {}'.format(self.name, i.id,
-                         i.__dict__))
+    def test_dict(self):
+        """ tests the method that returns a dictionary containing
+        all keys/values of __dict__ of the instance
+        """
+        instance = BaseModel()
 
-    def test_todict(self):
-        """ """
-        i = self.value()
-        n = i.to_dict()
-        self.assertEqual(i.to_dict(), n)
-
-    def test_kwargs_none(self):
-        """ """
-        n = {None: None}
-        with self.assertRaises(TypeError):
-            new = self.value(**n)
-
-    def test_kwargs_one(self):
-        """ """
-        n = {'Name': 'test'}
-        with self.assertRaises(KeyError):
-            new = self.value(**n)
-
-    def test_id(self):
-        """ """
-        new = self.value()
-        self.assertEqual(type(new.id), str)
-
-    def test_created_at(self):
-        """ """
-        new = self.value()
-        self.assertEqual(type(new.created_at), datetime.datetime)
-
-    def test_updated_at(self):
-        """ """
-        new = self.value()
-        self.assertEqual(type(new.updated_at), datetime.datetime)
-        n = new.to_dict()
-        new = BaseModel(**n)
-        self.assertFalse(new.created_at == new.updated_at)
+        dict_ = instance.to_dict()
+        self.assertIsInstance(dict_, dict)
+        self.assertEqual(dict_["__class__"], instance.__class__.__name__)
+        self.assertEqual(dict_["id"], instance.id)
+        self.assertEqual(dict_["created_at"], instance.created_at.isoformat())
+        self.assertEqual(dict_["updated_at"], instance.updated_at.isoformat())

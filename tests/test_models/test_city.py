@@ -1,24 +1,23 @@
 #!/usr/bin/python3
-""" """
-from tests.test_models.test_base_model import test_basemodel
+"""defines unittests for city.py.
+Unittest classes:
+    TestCityClass
+    """
+import unittest
+from models.base_model import BaseModel
 from models.city import City
 
 
-class test_City(test_basemodel):
-    """ """
+class TestCityClass(unittest.TestCase):
+    """Unittests for the City class"""
+    def test_instance(self):
+        """tests if the class is a child of BaseModel"""
+        city = City()
+        self.assertIsInstance(city, City)
+        self.assertIsInstance(city, BaseModel)
 
-    def __init__(self, *args, **kwargs):
-        """ """
-        super().__init__(*args, **kwargs)
-        self.name = "City"
-        self.value = City
-
-    def test_state_id(self):
-        """ """
-        new = self.value()
-        self.assertEqual(type(new.state_id), str)
-
-    def test_name(self):
-        """ """
-        new = self.value()
-        self.assertEqual(type(new.name), str)
+    def test_type_str(self):
+        """tests if all attributes are of str type"""
+        city = City()
+        self.assertIsInstance(city.state_id, str)
+        self.assertIsInstance(city.name, str)

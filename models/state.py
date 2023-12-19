@@ -1,8 +1,8 @@
 #!/usr/bin/python3
-""" State Module for HBNB project """
+"""This module contains one class State"""
 from models.base_model import BaseModel
 
 
 class State(BaseModel):
-    """ State class """
+    """child class of the class Basemodel"""
     name = ""

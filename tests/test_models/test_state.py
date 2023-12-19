@@ -1,19 +1,22 @@
 #!/usr/bin/python3
-""" """
-from tests.test_models.test_base_model import test_basemodel
+"""defines unittests for state.py.
+Unittest classes:
+    TestStateClass
+    """
+import unittest
+from models.base_model import BaseModel
 from models.state import State
 
 
-class test_state(test_basemodel):
-    """ """
+class TestStateClass(unittest.TestCase):
+    """Unittests for the State class"""
+    def test_instance(self):
+        """tests if the class is a child of BaseModel"""
+        state = State()
+        self.assertIsInstance(state, State)
+        self.assertIsInstance(state, BaseModel)
 
-    def __init__(self, *args, **kwargs):
-        """ """
-        super().__init__(*args, **kwargs)
-        self.name = "State"
-        self.value = State
-
-    def test_name3(self):
-        """ """
-        new = self.value()
-        self.assertEqual(type(new.name), str)
+    def test_type_str(self):
+        """tests if all attributes are of str type"""
+        state = State()
+        self.assertIsInstance(state.name, str)

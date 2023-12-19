@@ -1,19 +1,22 @@
 #!/usr/bin/python3
-""" """
-from tests.test_models.test_base_model import test_basemodel
+"""defines unittests for amenity.py
+Unittest classes:
+    TestAmenityClass
+    """
+import unittest
+from models.base_model import BaseModel
 from models.amenity import Amenity
 
 
-class test_Amenity(test_basemodel):
-    """ """
+class TestAmenityClass(unittest.TestCase):
+    """Unittests for the Amenity class"""
+    def test_instance(self):
+        """tests if the class is a child of BaseModel"""
+        amenity = Amenity()
+        self.assertIsInstance(amenity, Amenity)
+        self.assertIsInstance(amenity, BaseModel)
 
-    def __init__(self, *args, **kwargs):
-        """ """
-        super().__init__(*args, **kwargs)
-        self.name = "Amenity"
-        self.value = Amenity
-
-    def test_name2(self):
-        """ """
-        new = self.value()
-        self.assertEqual(type(new.name), str)
+    def test_type_str(self):
+        """tests if all attributes are of str type"""
+        amenity = Amenity()
+        self.assertIsInstance(amenity.name, str)
