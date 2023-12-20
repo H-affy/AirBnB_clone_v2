@@ -9,7 +9,7 @@ import shlex
 from models.city import City
 
 
-class State(BaseModel):
+class State(BaseModel, Base):
     """the class for State
     Attributes:
     name: input name

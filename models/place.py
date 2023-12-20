@@ -20,7 +20,7 @@ place_amenity = Table(
             nullable=False))
 
 
-class Place(BaseModel):
+class Place(BaseModel, Base):
     """the class for place
     Attributes:
     city_id: city id
