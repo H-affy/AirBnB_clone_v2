@@ -9,7 +9,7 @@ from models.city import City
 from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
-
+import shlex
 
 class FileStorage:
     """represents an abstract storage engine.
@@ -22,37 +22,49 @@ class FileStorage:
     __file_path = "file.json"
     __objects = {}
 
-    def all(self):
-        "returns the dictionary"
-        return FileStorage.__objects
+    def all(self, cls=None):
+        """returns the dictionary"""
+        dic = {}
+        if cls:
+            dictionary = self.__objects
+            for key in dictionary:
+                partition = key.replace('.', ' ')
+                partition = shlex.split(partition)
+                if (partition[0] == cls.__name__):
+                    dic[key] = self.__objects[key]
+            return (dic)
+        else:
+            return self.__objects
 
     def new(self, obj):
         """set in __objects obj with key <obj_class_name>.id"""
-        ocname = obj.__class__.__name__
-        FileStorage.__objects["{}.{}".format(ocname, obj.id)] = obj
+        if obj:
+            key = "{}.{}".format(type(obj).__name__, obj.id)
+            self.__objects[key] = obj
 
     def save(self):
         """serializes __objects to the JSON file __file_path."""
-        odict = FileStorage.__objects
-        objdict = {obj: odict[obj].to_dict() for obj in odict.keys()}
-        for obj_key, obj_value in objdict.items():
-            for key, value in obj_value.items():
-                if isinstance(value, datetime):
-                    obj_value[key] = value.isoformat()
-        with open(FileStorage.__file_path, "w") as f:
-            json.dump(objdict, f)
+        my_dict = {}
+        for key, value in self.__objects.items():
+            my_dict[key] = value.to_dict()
+        with open(self.__file_path, 'w', encoding="UTF-8") as f:
+            json.dump(my_dict, f)
 
     def reload(self):
         """deserialize the JSON file __file_path to __objects, if it exists."""
         try:
-            with open(FileStorage.__file_path) as f:
-                objdict = json.load(f)
-                for key, obj in objdict.items():
-                    cls_name = obj.get('__class__')
-                    mod_name = obj.get('__module__')
-                    if cls_name and mod_name:
-                        import_mod = __import__(mod_name, fromlist=[cls_name])
-                        class_ = getattr(import_mod, cls_name)
-                        self.new(class_(**obj))
+            with open(self.__file_path, 'r', encoding="UTF-8") as f:
+                for key, value in (json.load(f)).items():
+                    value = eval(value["__class__"])(**value)
+                    self.__objects[key] = value
         except FileNotFoundError:
-            return
+            pass
+    def delete(self, obj=None):
+        """delete an existing element"""
+        if obj:
+            key = "{}.{}".format(type(obj).__name__, obj.id)
+            del self.__objects[key]
+
+    def close(self):
+        """calls reload()"""
+        self.reload()
