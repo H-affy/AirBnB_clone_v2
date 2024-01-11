@@ -5,7 +5,8 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 from models.place import Place
-rom models.review import Review
+from models.review import Review
+
 
 class User(BaseModel, Base):
     """Class for user

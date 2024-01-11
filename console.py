@@ -55,26 +55,26 @@ class HBNBCommand(cmd.Cmd):
         (brackets denote optional fields in usage example.)
         """
 
-        #initialize line elements
+        # initialize line elements
         _cmd = _cls = _id = _args = ''
 
-        #Scan for general formatting
+        # Scan for general formatting
         if not ('.' in line and '(' in line and ')' in line):
             return line
 
-        #parse line lef to right
-        try: 
+        # parse line lef to right
+        try:
             pline = line[:]
 
-            #isolate <class name>
+            # isolate <class name>
             _cls = pline[:pline.find('.')]
 
-            #isolate and validate <commands>
+            # isolate and validate <commands>
             _cmd = pline[pline.find('.') + 1:pline.find('(')]
             if _cmd not in HBNBCommand.dot_cmds:
                 raise Exception
 
-            #if parentheses contain arguments, parse them
+            # if parentheses contain arguments, parse them
             pline = pline[pline.find('(') + 1:pline.find(')')]
             if pline:
                 # partition args: (<id>, [<delim>], [<*args>])
@@ -90,18 +90,18 @@ class HBNBCommand(cmd.Cmd):
                 pline = pline[2].strip()  # pline is now str
                 if pline:
                     # check for *args or **kwargs
-                    if pline[0] ==
-                    '{' and pline[-1] == '}'\and type(eval(pline)) is dict:
+                    if pline[0] == '{' and pline[-1] == '}'\
+                            and type(eval(pline)) is dict:
                         _args = pline
                     else:
                         _args = pline.replace(',', '')
                         # _args = _args.replace('\"', '')
             line = ' '.join([_cmd, _cls, _id, _args])
 
-            except Exception as mess:
-                pass
-            finally:
-                return line
+        except Exception as mess:
+            pass
+        finally:
+            return line
 
     def postcmd(self, stop, line):
         """Print if isatty id false"""
@@ -352,6 +352,7 @@ class HBNBCommand(cmd.Cmd):
         """Help information for the update class"""
         print("Updates an object with new information")
         print("Usage: update <className> <id> <attName> <attVal>\n")
+
 
 if __name__ == '__main__':
     HBNBCommand().cmdloop()

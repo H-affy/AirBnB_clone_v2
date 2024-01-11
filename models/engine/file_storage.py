@@ -11,6 +11,7 @@ from models.place import Place
 from models.review import Review
 import shlex
 
+
 class FileStorage:
     """represents an abstract storage engine.
 
@@ -52,13 +53,15 @@ class FileStorage:
 
     def reload(self):
         """deserialize the JSON file __file_path to __objects, if it exists."""
+        """deserializes the JSON file to __objects"""
         try:
-            with open(self.__file_path, 'r', encoding="UTF-8") as f:
-                for key, value in (json.load(f)).items():
-                    value = eval(value["__class__"])(**value)
-                    self.__objects[key] = value
-        except FileNotFoundError:
+            with open(self.__file_path, 'r') as f:
+                jo = json.load(f)
+            for key in jo:
+                self.__objects[key] = classes[jo[key]["__class__"]](**jo[key])
+        except:
             pass
+
     def delete(self, obj=None):
         """delete an existing element"""
         if obj:
